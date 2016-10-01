@@ -38,8 +38,12 @@
                     ctrl.displayError = ctrl.FoundList.length < 1;//boolean to display error message
                 });
             }
+            else {
+                  ctrl.FoundList=[];//clear list in case of empty
+                  ctrl.displayError = ctrl.FoundList.length < 1;//boolean to display error message
+            }
 
-        ctrl.displayError = ctrl.FoundList.length < 1;//boolean to display error message
+
         };
 
         ctrl.removeItem = function (index) {
@@ -50,7 +54,8 @@
     MenuSearchService.$inject = ['$http'];
     function MenuSearchService($http) {
         var service = this;
-        service.getMatchedMenuItems = function (text) {
+        service.getMatchedMenuItems = function (text)
+        {
             var url = "https://davids-restaurant.herokuapp.com/menu_items.json";
 
             var response = $http.get(url).then(function (result) {
