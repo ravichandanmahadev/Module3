@@ -1,0 +1,19 @@
+<div  ng-if="dirCtrl.error" class="alert-danger"  > *** Nothing found</div>
+<table class="table table-bordered" ng-if="dirCtrl.found.length" >
+  <thead>
+    <tr>
+        <th>Name</th>
+        <th>Short Name</th>
+        <th>Description</th>
+        <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+     <tr ng-repeat="item in dirCtrl.found">
+     <td>{{item.name}}</td>
+     <td>{{item.short_name}}</td>
+     <td>{{item.description}}</td>
+     <td> <button ng-click="dirCtrl.onRemove({index:$index});">Don't Want This One </button></td>
+  </tr>
+  </tbody>
+</table>

@@ -1,34 +1,51 @@
 (function(){
-
 angular.module("NarrowItDown",[])
 .controller("NarrowItDownController", NarrowItDownController)
+.controller("directiveController",directiveController)
 .service("MenuSearchService", MenuSearchService)
 .directive("foundItems",foundItems);
 
+function directiveController()
+{
+  var dirCTrl = this;
+  console.log(this);
+}
 function foundItems()
 {
     var ddo= {
-
-      
+      templateUrl : "SearchList.html",
+      bindToController:true,
+      controller:"directiveController as dirCtrl",
+      scope:{
+        found: "<foundList",
+        error: "<errorMessasge",//boolen to display error message
+        onRemove:'&'
+      }
     };
-
     return ddo;
-
 }
-
 
 NarrowItDownController.$inject = ['MenuSearchService'];
 function  NarrowItDownController(MenuSearchService)
 {
   var ctrl = this;
-
   ctrl.SearchText = "";
-  ctrl.FoundList = [];
-
+  ctrl.errorMessage = false;
+  ctrl.FoundList=[];
   ctrl.Search = function(){
-  MenuSearchService.getMatchedMenuItems(ctrl.SearchText).then(function(result){
-      console.log(result);
-    });
+    if (ctrl.SearchText != undefined &&  ctrl.SearchText !="")
+     {
+          MenuSearchService.getMatchedMenuItems(ctrl.SearchText).then(function(result)
+          {
+                    ctrl.FoundList = result;
+                    ctrl.displayError = ctrl.FoundList.length <1;//boolean to display error message
+          });
+      }
+
+  };
+
+  ctrl.removeItem = function(index){
+      ctrl.FoundList.splice(index,1);
   };
 }
 
@@ -45,7 +62,15 @@ function MenuSearchService($http)
 
     for(var i=0; i<resp.menu_items.length;i++)
      {
-       console.log(resp.menu_items[i]);
+       if(resp.menu_items[i].description.includes(text))
+       {
+       var record =  {
+         short_name: resp.menu_items[i].short_name,
+         name: resp.menu_items[i].name,
+         description: resp.menu_items[i].description,
+       };
+       foundItems.push(record);
+     }
      }
 
     // return processed it
